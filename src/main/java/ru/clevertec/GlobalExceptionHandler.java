@@ -4,6 +4,7 @@ import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -69,6 +70,16 @@ public class GlobalExceptionHandler {
                 .data(errors)
                 .status(false)
                 .message("Валидация не прошла(")
+                .build());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ApiResponse<String>> handleBadCredentialsException(BadCredentialsException ex) {
+        return ResponseEntity.badRequest().body(ApiResponse.<String>builder()
+                .data(null)
+                .status(false)
+                .message("Неверный логин или пароль")
                 .build());
     }
 
